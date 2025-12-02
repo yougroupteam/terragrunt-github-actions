@@ -12,11 +12,12 @@ RUN apk add --no-cache \
       py3-pip
 
 RUN ["/bin/sh", "-c", "apk add --update --no-cache bash ca-certificates curl git jq openssh"]
-RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/awscliv2.zip" \
-    && unzip /tmp/awscliv2.zip -d /tmp \
-    && /tmp/aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli \
-    && rm -rf /tmp/aws /tmp/awscliv2.zip
-
+# Install AWS CLI v2 (official way — the only one that works on Alpine)
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
+    unzip awscliv2.zip && \
+    ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli && \
+    rm -rf aws awscliv2.zip
+    
 COPY ["src", "/src/"]
 
 ENTRYPOINT ["/src/main.sh"]
